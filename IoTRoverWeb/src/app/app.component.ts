@@ -1,6 +1,6 @@
 import { Component,AfterViewInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import nipplejs from 'nipplejs';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -10,9 +10,6 @@ import nipplejs from 'nipplejs';
 })
 export class AppComponent implements AfterViewInit  {
   ngAfterViewInit(): void {
-  let joystick= nipplejs.create({
-       mode:'semi',
-       color:'red'
-  })
+
   }
 }
