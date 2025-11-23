@@ -35,10 +35,12 @@ void Bootstrap::setup()
     // 开启Web服务器
     webServerModule = new WebServerModule(WebServerPort);
     webServerModule->init();
-    //启动WebSocket服务
+    // 启动WebSocket服务
     webSocketModule = new WebSocketModule(WebSocketPort);
     webSocketModule->init();
 }
+
 void Bootstrap::loop()
 {
+    webSocketModule->loop();
 }
