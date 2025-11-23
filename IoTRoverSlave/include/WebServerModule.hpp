@@ -5,8 +5,8 @@
 class WebServerModule
 {
 private:
-    AsyncWebServer* server;  // Web 服务器指针
-    uint16_t port;  // 服务器监听的端口
+    AsyncWebServer *server; // Web 服务器指针
+    uint16_t port;          // 服务器监听的端口
 
 public:
     // 构造函数：传入端口号并初始化 Web 服务器
@@ -29,7 +29,8 @@ WebServerModule::WebServerModule(uint16_t serverPort)
 WebServerModule::~WebServerModule()
 {
     // 如果需要清理，释放服务器内存
-    if (server != nullptr) {
+    if (server != nullptr)
+    {
         delete server;
     }
 }
@@ -37,16 +38,11 @@ WebServerModule::~WebServerModule()
 void WebServerModule::init()
 {
     server = new AsyncWebServer(port);
-    // 设置路由
-    server->on("/", HTTP_GET,[](AsyncWebServerRequest *request){
-        String msg="I am Ouse!";
-        request->send(200,"text/plain",msg);
-    });
-
-    server->onNotFound([](AsyncWebServerRequest *request){
-        request->send(404, "text/plain", "Not found");
-    });
-
+    // 设置静态文件
+    server->serveStatic("/", LittleFS, "/").setDefaultFile("index.html");
+    // 处理 404 错误：返回 index.html 作为回退
+    server->onNotFound([](AsyncWebServerRequest *request)
+                       { request->send(LittleFS, "/index.html", "text/html"); });
     // 启动 Web 服务器
     server->begin();
     Serial.printf("WebServer 已启动，监听端口 %d\n", port);

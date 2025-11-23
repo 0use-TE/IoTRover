@@ -11,7 +11,7 @@ private:
 public:
     WifiModule(const String &wifiName, const String &wifiPassword);
     ~WifiModule();
-    bool Init();
+    bool init();
 };
 
 WifiModule::WifiModule(const String &wifiName, const String &wifiPassword)
@@ -24,10 +24,10 @@ WifiModule::~WifiModule()
 {
 }
 
-bool WifiModule::Init()
+bool WifiModule::init()
 {
     WiFi.begin(wifiName, wifiPassword); // 启动连接
-    Serial.printf("Connecting to WiFi: %s\n", wifiName);
+    Serial.printf("连接到Wifi: %s\n", wifiName);
 
     int retries = 0;
     const int maxRetries = 3;
