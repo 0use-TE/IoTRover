@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component,AfterViewInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-
+import nipplejs from 'nipplejs';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -8,6 +8,11 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
-  title = 'IoTRoverWeb';
+export class AppComponent implements AfterViewInit  {
+  ngAfterViewInit(): void {
+  let joystick= nipplejs.create({
+       mode:'semi',
+       color:'red'
+  })
+  }
 }
