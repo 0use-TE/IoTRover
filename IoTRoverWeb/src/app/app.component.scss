@@ -1,22 +1,10 @@
- 
-/* 工具栏样式 */
-.toolbar {
-  background-color: #ffffff; /* 工具栏背景为白色 */
-  color: #3f51b5; /* 工具栏文本颜色 */
-  padding: 10px 20px; /* 设置工具栏内边距 */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 给工具栏添加阴影效果 */
-}
 
-.toolbar-title{
-    font-weight: bold;
-    font-size:larger;
-}
-.toolbar-title:hover{
-    transform: scale(1.1);
-    transition:all 0.4s;
-}
-/* 弹性占位符，使内容自动填充剩余空间 */
-.flex-spacer {
+.spacer{
   flex: 1 1 auto;
 }
-
+#nav{
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+#toolbar{
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}

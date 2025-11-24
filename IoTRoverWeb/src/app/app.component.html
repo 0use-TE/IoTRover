@@ -1,7 +1,22 @@
 <main>
-    <mat-toolbar class="toolbar">
-        <h3 class="toolbar-title">旅行者1号</h3>
-        <div class="flex-spacer"></div>
-    </mat-toolbar>
+    <mat-drawer-container style="height: 100vh;">
+        <mat-drawer #drawer mode="over" id="nav">
 
+        </mat-drawer>
+        <mat-drawer-content  style="display: flex; flex-direction: column;overflow: hidden;">
+            <mat-toolbar id="toolbar">
+                <button mat-icon-button (click)="drawer.toggle()">
+                    <mat-icon>menu</mat-icon>
+                </button>
+                <span>旅行者一号</span>
+                <span class="spacer"></span>
+                <button mat-icon-button>
+                    <mat-icon>favorite</mat-icon>
+                </button>
+            </mat-toolbar>
+            <div style="overflow: auto;flex:1">
+                <app-main-view></app-main-view>
+            </div>
+        </mat-drawer-content>
+    </mat-drawer-container>
 </main>
