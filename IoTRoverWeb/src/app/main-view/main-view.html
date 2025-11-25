@@ -3,24 +3,25 @@
     <div fxFlex.xs="100%" fxFlex.sm="80%" fxFlex.gt-sm="50%" style=" padding: 16px; margin: 8px;">
       <mat-card class="example-card" appearance="outlined">
         <mat-card-header>
-          <mat-card-title>信息面板:</mat-card-title>
+          <mat-card-title style="font-weight: bold;">信息面板:</mat-card-title>
         </mat-card-header>
         <mat-card-content style="margin: 8px;">
-          <div style="display: flex;flex-direction: row;align-items: center;">
+
+          <!-- 手机：column；平板及以上：row -->
+          <div fxLayout.xs="column" fxLayout.gt-xs="row" fxLayoutAlign="center center" style="align-items: center;">
             <label class="label">设置速度:{{speed()}}</label>
-            <div style="flex:1;"></div>
-            <mat-slider min="0" max="100" style="width: 80%;" step="2">
+            <div fxFlex></div>
+            <mat-slider min="0" max="100" style="width: 70%;" step="2">
               <input matSliderThumb [(ngModel)]="speed" />
             </mat-slider>
           </div>
 
-          <!-- 当前速度 -->
-          <div style="display: flex;flex-direction: row;align-items: center;">
-            <label class="label">运行速度:{{currentSpeed()}}</label>
-            <div style="flex:1;"></div>
-            <mat-slider min="0" max="100" style="width: 80%;" step="2" (mousedown)="$event.preventDefault()"
-              (touchstart)="$event.preventDefault()" >
-              <input matSliderThumb [value]="currentSpeed()" />
+              <div fxLayout.xs="column" fxLayout.gt-xs="row" fxLayoutAlign="center center" style="align-items: center;">
+            <label class="label">实际速度:{{currentSpeed()}}</label>
+            <div fxFlex></div>
+            <mat-slider min="0" max="100" style="width: 70%;" (mousedown)="$event.preventDefault()" 
+            (touchstart)="$event.preventDefault()">
+              <input matSliderThumb [(ngModel)]="currentSpeed" />
             </mat-slider>
           </div>
 

@@ -5,11 +5,13 @@
 #include "WebServerModule.hpp"
 #include "APModule.hpp"
 #include "WebSocketModule.hpp"
+#include "ControlModule.hpp"
 class Bootstrap
 {
 private:
     WebServerModule *webServerModule;
     WebSocketModule *webSocketModule;
+    ControlModule *controlModule;
 
 public:
     void setup();
@@ -32,6 +34,9 @@ void Bootstrap::setup()
         APModule apModule(APName, APPassword);
         apModule.init();
     }
+    // 控制模块
+    controlModule = new ControlModule(ENA, ENB, IN1, IN2, IN3, IN4, ENAChannel, ENBChannel);
+    controlModule->init();
     // 开启Web服务器
     webServerModule = new WebServerModule(WebServerPort);
     webServerModule->init();
