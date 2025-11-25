@@ -41,7 +41,7 @@ void Bootstrap::setup()
     webServerModule = new WebServerModule(WebServerPort);
     webServerModule->init();
     // 启动WebSocket服务
-    webSocketModule = new WebSocketModule(WebSocketPort);
+    webSocketModule = new WebSocketModule(WebSocketPort, controlModule);
     webSocketModule->init();
 }
 

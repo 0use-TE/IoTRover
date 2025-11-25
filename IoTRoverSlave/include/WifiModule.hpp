@@ -23,19 +23,18 @@ WifiModule::WifiModule(const String &wifiName, const String &wifiPassword)
 WifiModule::~WifiModule()
 {
 }
-
 bool WifiModule::init()
 {
-    WiFi.begin(wifiName, wifiPassword); // 启动连接
-    Serial.printf("连接到Wifi: %s\n", wifiName);
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(wifiName, wifiPassword);
+    Serial.printf("连接到 Wifi: %s\n", wifiName);
+    unsigned long startAttemptTime = millis();
+    const unsigned long timeout = 10000;
 
-    int retries = 0;
-    const int maxRetries = 3;
-    while (WiFi.status() != WL_CONNECTED && retries < maxRetries)
+    while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < timeout)
     {
-        delay(500);
         Serial.print(".");
-        retries++;
+        delay(500);
     }
     Serial.println();
 
@@ -43,12 +42,9 @@ bool WifiModule::init()
     {
         Serial.print("IP: ");
         Serial.println(WiFi.localIP());
-
         return true;
     }
-    else
-    {
-        Serial.printf("WiFi: %s 连接失败!\n", wifiName);
-        return false;
-    }
+
+    Serial.printf("WiFi: %s 连接失败!\n", wifiName);
+    return false;
 }

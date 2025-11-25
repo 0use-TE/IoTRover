@@ -1,13 +1,16 @@
 #pragma once
 #include <WebSocketsServer.h>
-
+#include "ControlModule.hpp"
+#include <ArduinoJson.h>
 class WebSocketModule
 {
 private:
     WebSocketsServer *webSocketServer; // WebSocket 服务器
     uint16_t webSocketPort;            // WebSocket 端口
+    ControlModule *controlModule;
+
 public:
-    WebSocketModule(uint16_t webSocketPort);
+    WebSocketModule(uint16_t webSocketPort, ControlModule *controlModule);
     ~WebSocketModule();
     void init();
     void sendText(uint8_t num, const char *message);                           // 发送文本消息
@@ -17,9 +20,10 @@ public:
     void loop();
 };
 
-WebSocketModule::WebSocketModule(uint16_t webSocketPort)
+WebSocketModule::WebSocketModule(uint16_t webSocketPort, ControlModule *controlModule)
 {
     this->webSocketPort = webSocketPort;
+    this->controlModule = controlModule;
 }
 
 WebSocketModule::~WebSocketModule()
@@ -37,10 +41,7 @@ void WebSocketModule::init()
     webSocketServer->begin();
     // 获取消息
     webSocketServer->onEvent([this](uint8_t num, WStype_t type, uint8_t *payload, size_t length)
-                             {
-                                 this->onEvent(num, type, payload, length);
-                                 Serial.println("WebSocketServer启动成功");
-                             });
+                             { this->onEvent(num, type, payload, length); });
 }
 
 void WebSocketModule::sendText(uint8_t num, const char *message)
@@ -79,12 +80,31 @@ void WebSocketModule::onEvent(uint8_t num, WStype_t type, uint8_t *payload, size
     }
     case WStype_TEXT:
     {
-        String msg = "";
-        for (size_t i = 0; i < length; i++)
-            msg += (char)payload[i];
+        String msg = String((char *)payload); // 将转为 String
+        Serial.println(msg);                  // 打印转换后的字符串
+        JsonDocument doc;
+        DeserializationError err = deserializeJson(doc, msg);
+        if (err)
+        {
+            Serial.println("JSON 解析失败");
+            Serial.println(err.c_str());
+            return;
+        }
+        // 获取命令字段
+        String cmd = doc["cmd"]; // 字段不存在= nullptr
+        if (!cmd)
+        {
+            Serial.println("缺少 cmd 字段");
+            return;
+        }
 
-        Serial.printf("收到文本消息：%s",msg);
-        Serial.println();
+        if (cmd == "move")
+        {
+            int leftMotor = doc["leftMotor"];
+            int rightMotor = doc["rightMotor"];
+            controlModule->move(leftMotor, rightMotor);
+        }
+
         break;
     }
     case WStype_BIN:

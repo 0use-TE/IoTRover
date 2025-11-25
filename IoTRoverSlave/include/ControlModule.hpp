@@ -39,10 +39,15 @@ void ControlModule::init()
     ledcAttachPin(ENB, ENBChannel);
     Serial.println("引脚初始化完毕!");
 }
-
 void ControlModule::move(int leftSpeed, int rightSpeed)
 {
-    // 左轮
+    Serial.println("左:" + String(leftSpeed) + "右:" + String(rightSpeed));
+
+    // 直接控制PWM
+    ledcWrite(ENAChannel, constrain(abs(leftSpeed), 0, 255)); // 绝对值，0~255范围
+    ledcWrite(ENBChannel, constrain(abs(rightSpeed), 0, 255));
+
+    // 对于电机的方向，只要设置好 PWM
     if (leftSpeed >= 0)
     {
         digitalWrite(IN1, HIGH);
@@ -52,21 +57,16 @@ void ControlModule::move(int leftSpeed, int rightSpeed)
     {
         digitalWrite(IN1, LOW);
         digitalWrite(IN2, HIGH);
-        leftSpeed = -leftSpeed; // 取绝对值
     }
-    ledcWrite(ENAChannel, constrain(leftSpeed, 0, 255));
 
-    // 右轮
     if (rightSpeed >= 0)
+    {
+        digitalWrite(IN3, LOW);
+        digitalWrite(IN4, HIGH);
+    }
+    else
     {
         digitalWrite(IN3, HIGH);
         digitalWrite(IN4, LOW);
     }
-    else
-    {
-        digitalWrite(IN3, LOW);
-        digitalWrite(IN4, HIGH);
-        rightSpeed = -rightSpeed; // 取绝对值
-    }
-    ledcWrite(ENBChannel, constrain(rightSpeed, 0, 255));
 }
