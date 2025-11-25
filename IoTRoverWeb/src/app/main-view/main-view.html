@@ -1,11 +1,37 @@
 <div fxLayout="column" style="height: 100%;">
   <div fxLayout="row" fxLayoutAlign="center" style="flex: 1;">
-    <div fxFlex.xs="100%" fxFlex.sm="80%" fxFlex.gt-sm="50%" style="background: lightblue; padding: 16px; margin: 8px;">
-      
+    <div fxFlex.xs="100%" fxFlex.sm="80%" fxFlex.gt-sm="50%" style=" padding: 16px; margin: 8px;">
+      <mat-card class="example-card" appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>信息面板:</mat-card-title>
+        </mat-card-header>
+        <mat-card-content style="margin: 8px;">
+          <div style="display: flex;flex-direction: row;align-items: center;">
+            <label class="label">设置速度:{{speed()}}</label>
+            <div style="flex:1;"></div>
+            <mat-slider min="0" max="100" style="width: 80%;" step="2">
+              <input matSliderThumb [(ngModel)]="speed" />
+            </mat-slider>
+          </div>
+
+          <!-- 当前速度 -->
+          <div style="display: flex;flex-direction: row;align-items: center;">
+            <label class="label">运行速度:{{currentSpeed()}}</label>
+            <div style="flex:1;"></div>
+            <mat-slider min="0" max="100" style="width: 80%;" step="2" (mousedown)="$event.preventDefault()"
+              (touchstart)="$event.preventDefault()" >
+              <input matSliderThumb [value]="currentSpeed()" />
+            </mat-slider>
+          </div>
+
+        </mat-card-content>
+        <mat-card-actions>
+        </mat-card-actions>
+      </mat-card>
     </div>
   </div>
-  <div #joystickArea style="width: 100%; height: 200px;background-color: lightgray;position: static;
-  bottom: 0px;" >
+  <mat-divider></mat-divider>
+  <div #joystickArea style="width: 100%; height: 200px;">
 
   </div>
 </div>
