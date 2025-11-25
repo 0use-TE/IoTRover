@@ -416,3 +416,11 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+IoTRoverSlave/data/3rdpartylicenses.txt
+IoTRoverSlave/data/index.html
+IoTRoverSlave/data/main-QO4JRXRR.js
+IoTRoverSlave/data/main-STPDPY3H.js
+IoTRoverSlave/data/polyfills-5CFQRCPP.js
+IoTRoverSlave/data/prerendered-routes.json
+IoTRoverSlave/data/styles-5INURTSO.css
+IoTRoverSlave/data/styles-Y6IMBQBV.css
