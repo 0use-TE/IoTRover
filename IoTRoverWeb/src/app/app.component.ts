@@ -1,6 +1,5 @@
 import { Component,AfterViewInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button'
-import { MatCheckbox} from '@angular/material/checkbox'
 import { MatToolbarModule} from '@angular/material/toolbar'
 import {MatIconModule} from '@angular/material/icon'
 import {MatSidenavModule} from '@angular/material/sidenav'
@@ -10,7 +9,7 @@ import {MainView}from './main-view/main-view'
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [MatCheckbox,MatToolbarModule,MatIconModule,MatSidenavModule,
+  imports: [MatToolbarModule,MatIconModule,MatSidenavModule,
      MatButtonModule, MatCardModule,MainView],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

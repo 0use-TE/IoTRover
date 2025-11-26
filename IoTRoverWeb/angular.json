@@ -17,6 +17,9 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "optimization": {
+               "fonts": false
+            },
             "outputPath": {
               "base": "../IoTRoverSlave/data",
                "browser": ""

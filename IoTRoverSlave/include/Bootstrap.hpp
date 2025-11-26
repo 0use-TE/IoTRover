@@ -1,51 +1,100 @@
+// Bootstrap.hpp
+#pragma once
 #include <Arduino.h>
+#include "Settings.h"
 #include "FSModule.hpp"
 #include "WifiModule.hpp"
-#include "Settings.h"
-#include "WebServerModule.hpp"
 #include "APModule.hpp"
+#include "WebServerModule.hpp"
 #include "WebSocketModule.hpp"
 #include "ControlModule.hpp"
+
 class Bootstrap
 {
 private:
-    WebServerModule *webServerModule;
-    WebSocketModule *webSocketModule;
-    ControlModule *controlModule;
+    // 全部都是实打实的成员对象！
+    FSModule fsModule;
+    WifiModule wifiModule;
+    APModule apModule;
+    ControlModule controlModule;
+    WebServerModule webServerModule;
+    WebSocketModule webSocketModule;
+
+    bool needAP = false;
+    unsigned long lastMemPrint = 0;
+    void printMemory()
+    {
+        Serial.println("╔═══════════════════════════════════");
+        Serial.printf("║  可用堆内存 (Free Heap)    : %6d 字节\n", ESP.getFreeHeap());
+        Serial.printf("║  最大单块堆 (Max Alloc)    : %6d 字节\n", ESP.getMaxAllocHeap());
+        Serial.printf("║  最小曾有堆 (Min Free)     : %6d 字节\n", ESP.getMinFreeHeap());
+        Serial.printf("║  总堆大小 (Total Heap)     : %6d 字节\n", ESP.getHeapSize());
+
+        Serial.printf("║  当前栈水位 (Stack HWM)    : %6d 字节\n", uxTaskGetStackHighWaterMark(NULL));
+        Serial.printf("║  总栈大小 (约)             : %6d 字节\n", CONFIG_ARDUINO_LOOP_STACK_SIZE);
+        Serial.println("╚═══════════════════════════════════");
+    }
 
 public:
+    Bootstrap()
+        : wifiModule(WifiName, WifiPassword), apModule(APName, APPassword),
+          controlModule(ENA, ENB, IN1, IN2, IN3, IN4, ENAChannel, ENBChannel),
+          webServerModule(WebServerPort), webSocketModule(WebSocketPort, &controlModule)
+    {
+    }
+
     void setup();
     void loop();
 };
 
+// ====================== setup ======================
 void Bootstrap::setup()
 {
-    // 开启串口
-    Serial.begin(115200);
-    // 挂载文件系统
-    FSModule fsModule;
+    Serial.begin(921600);
+    while (!Serial)
+        delay(10);
+    Serial.println(F("\n\n========== ESP32 小车启动 =========="));
+
+    // 1. 文件系统
     fsModule.init();
-    // 连接网络
-    WifiModule WifiModule(WifiName, WifiPassword);
-    bool wifiConnected = WifiModule.init();
-    // 无法连接，进入AP模式
-    if (!wifiConnected)
+    // 2. 尝试连接 WiFi
+    bool wifiOk = wifiModule.init();
+
+    if (!wifiOk)
     {
-        APModule apModule(APName, APPassword);
+        Serial.println(F("WiFi 连接失败 → 启动配网 AP"));
+        needAP = true;
         apModule.init();
     }
-    // 控制模块
-    controlModule = new ControlModule(ENA, ENB, IN1, IN2, IN3, IN4, ENAChannel, ENBChannel);
-    controlModule->init();
-    // 开启Web服务器
-    webServerModule = new WebServerModule(WebServerPort);
-    webServerModule->init();
-    // 启动WebSocket服务
-    webSocketModule = new WebSocketModule(WebSocketPort, controlModule);
-    webSocketModule->init();
+
+    // 3. 电机、Web、WebSocket 无论如何都要启动
+    controlModule.init();
+    webServerModule.init();
+    webSocketModule.init();
+
+    // 4. 启动完成提示
+    IPAddress ip = needAP ? WiFi.softAPIP() : WiFi.localIP();
+    Serial.println(F("====================================="));
+    Serial.printf("  系统启动完成！\n");
+    if (needAP)
+    {
+        Serial.println(F("  当前为配网模式 (AP)"));
+    }
+    else
+    {
+        Serial.println(F("  当前为正常联网模式 (STA)"));
+    }
+    Serial.printf("  浏览器访问 → http://%s\n", ip.toString().c_str());
+    Serial.println(F("=====================================\n"));
 }
 
+// ====================== loop ======================
 void Bootstrap::loop()
 {
-    webSocketModule->loop();
+    webSocketModule.loop();
+    if (millis() - lastMemPrint > 10000)
+    {
+        lastMemPrint = millis();
+        printMemory();
+    }
 }

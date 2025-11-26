@@ -39,7 +39,8 @@ export class MainView implements AfterViewInit, OnDestroy {
   private heartbeat?: any;
   private lastCmd: MoveCmd = { cmd: "move", leftMotor: 0, rightMotor: 0 };
   private connectingSnackBar?: MatSnackBarRef<TextOnlySnackBar>;
-
+  private lastSendTime = 0;
+  private MIN_SEND_INTERVAL = 200; 
   constructor(
     private snackBar: MatSnackBar,
     public wsService: WebSocketService
@@ -114,8 +115,8 @@ export class MainView implements AfterViewInit, OnDestroy {
     const force = strength > 1 ? 1 : strength;
 
     // 第二步：关键修正 —— 左右转向取反！
-    const forward = Math.cos(angleRad);     
-    const turn = -Math.sin(angleRad);    
+    const forward = Math.cos(angleRad);
+    const turn = -Math.sin(angleRad);
 
     const maxUserSpeed = this.speed() / 100;
 
@@ -137,7 +138,6 @@ export class MainView implements AfterViewInit, OnDestroy {
     const pwm = 180 + 75 * abs; // 180 ~ 255
     return value > 0 ? pwm : -pwm;
   }
-
   private sendCommand(left: number, right: number) {
     const cmd: MoveCmd = {
       cmd: "move",
@@ -145,10 +145,16 @@ export class MainView implements AfterViewInit, OnDestroy {
       rightMotor: Math.round(right)
     };
 
-    // 只在数值变化时更新 UI 和发送
-    if (cmd.leftMotor !== this.lastCmd.leftMotor || cmd.rightMotor !== this.lastCmd.rightMotor) {
-      this.lastCmd = cmd;
+    // 变化才发 + 最小间隔双保险
+    const now = Date.now();
+    if (cmd.leftMotor !== this.lastCmd.leftMotor ||
+      cmd.rightMotor !== this.lastCmd.rightMotor ||
+      now - this.lastSendTime > this.MIN_SEND_INTERVAL) {
 
+      this.lastCmd = cmd;
+      this.lastSendTime = now;  // 更新时间
+
+      // UI 更新...
       const intensity = Math.max(Math.abs(left), Math.abs(right));
       this.currentSpeed.set(intensity >= 180 ? Math.round((intensity - 180) / 75 * 100) : 0);
 
@@ -185,4 +191,5 @@ export class MainView implements AfterViewInit, OnDestroy {
     this.sendCommand(0, 0); // 强制停
     this.snackBar.open('已断开连接', '关闭', { duration: 2000 });
   }
+
 }

@@ -12,7 +12,7 @@ private:
     u_int8_t IN4;
     u_int8_t ENAChannel;
     u_int8_t ENBChannel;
-    u_int32_t freq = 10000;
+    u_int32_t freq = 20000;
 
 public:
     ControlModule(u_int8_t ena, u_int8_t enb, u_int8_t in1, u_int8_t in2,
