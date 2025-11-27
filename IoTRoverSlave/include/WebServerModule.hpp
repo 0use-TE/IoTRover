@@ -13,7 +13,7 @@ public:
 };
 
 WebServerModule::WebServerModule(uint16_t serverPort)
-    : port(serverPort), server(serverPort) // 这里传端口
+    : port(serverPort), server(serverPort) 
 {
     Serial.println("WebServerModule 已初始化");
 }

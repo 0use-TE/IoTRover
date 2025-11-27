@@ -12,7 +12,7 @@
 class Bootstrap
 {
 private:
-    // 全部都是实打实的成员对象！
+    
     FSModule fsModule;
     WifiModule wifiModule;
     APModule apModule;

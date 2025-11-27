@@ -75,8 +75,6 @@ void WebSocketModule::handleEvent(uint8_t num, WStype_t type, uint8_t *payload, 
         // 复用成员 doc，零栈压
         doc.clear();
         DeserializationError error = deserializeJson(doc, payload,length);
-        // auto content = (char *)payload;
-        // Serial.println(content);
 
         if (error)
         {
